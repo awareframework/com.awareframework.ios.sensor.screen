@@ -1,5 +1,5 @@
 import XCTest
-import com.awareframework.ios.sensor.screen
+import com_awareframework_ios_sensor_screen
 
 class Tests: XCTestCase {
     
