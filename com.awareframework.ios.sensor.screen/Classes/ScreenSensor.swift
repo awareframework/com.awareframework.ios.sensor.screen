@@ -84,7 +84,7 @@ public class ScreenSensor: AwareSensor {
     
     public static let ACTION_AWARE_SCREEN_SYNC = "com.awareframework.android.sensor.screen.SENSOR_SYNC"
     
-    var CONFIG = Config()
+    public var CONFIG = Config()
     
     public class Config:SensorConfig {
         public var sensorObserver:ScreenObserver? = nil

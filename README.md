@@ -1,6 +1,6 @@
 # Aware Screen
 
-[![CI Status](https://img.shields.io/travis/tetujin/com.awareframework.ios.sensor.screen.svg?style=flat)](https://travis-ci.org/tetujin/com.awareframework.ios.sensor.screen)
+[![CI Status](https://img.shields.io/travis/awareframework/com.awareframework.ios.sensor.screen.svg?style=flat)](https://travis-ci.org/awareframework/com.awareframework.ios.sensor.screen)
 [![Version](https://img.shields.io/cocoapods/v/com.awareframework.ios.sensor.screen.svg?style=flat)](https://cocoapods.org/pods/com.awareframework.ios.sensor.screen)
 [![License](https://img.shields.io/cocoapods/l/com.awareframework.ios.sensor.screen.svg?style=flat)](https://cocoapods.org/pods/com.awareframework.ios.sensor.screen)
 [![Platform](https://img.shields.io/cocoapods/p/com.awareframework.ios.sensor.screen.svg?style=flat)](https://cocoapods.org/pods/com.awareframework.ios.sensor.screen)
