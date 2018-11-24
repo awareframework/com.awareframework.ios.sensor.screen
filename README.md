@@ -5,11 +5,7 @@
 [![License](https://img.shields.io/cocoapods/l/com.awareframework.ios.sensor.screen.svg?style=flat)](https://cocoapods.org/pods/com.awareframework.ios.sensor.screen)
 [![Platform](https://img.shields.io/cocoapods/p/com.awareframework.ios.sensor.screen.svg?style=flat)](https://cocoapods.org/pods/com.awareframework.ios.sensor.screen)
 
-The screen sensor monitors the screen statuses, such as turning on and off, locked and unlocked.
-
-## Example
-
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+The screen sensor monitors the screen statuses, such as turning on and off, locked and unlocked
 
 ## Requirements
 iOS 10 or later
@@ -21,13 +17,57 @@ com.awareframework.ios.sensor.wifi is available through [CocoaPods](https://coco
 1. To install it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'com.awareframework.ios.sensor.wifi'
+pod 'com.awareframework.ios.sensor.screen'
 ```
 
-2. Import com.awareframework.ios.sensor.wifi library into your source code.
+2. Import com.awareframework.ios.sensor.screen library into your source code.
 ```swift
-import com_awareframework_ios_sensor_wifi
+import com_awareframework_ios_sensor_screen
 ```
+
+## ScreenSensor
+* `init(config:ScreenSensor.Config?)` : Initializes the screen sensor with the optional configuration.
+* `start()`: Starts the gyroscope sensor with the optional configuration.
+* `stop()`: Stops the service.
+
+
+### ScreenSensor.Config
+
+Class to hold the configuration of the sensor.
+
+#### Fields
+
++ `sensorObserver: ScreenObserver`: Callback for live data updates.
++ `enabled: Boolean` Sensor is enabled or not. (default = `false`)
++ `debug: Boolean` enable/disable logging to `Logcat`. (default = `false`)
++ `label: String` Label for the data. (default = "")
++ `deviceId: String` Id of the device that will be associated with the events and the sensor. (default = "")
++ `dbEncryptionKey` Encryption key for the database. (default = `null`)
++ `dbType: Engine` Which db engine to use for saving data. (default = `Engine.DatabaseType.NONE`)
++ `dbPath: String` Path of the database. (default = "aware_screen")
++ `dbHost: String` Host for syncing the database. (default = `null`)
+
+## Broadcasts
+
++ `ScreenSensor.ACTION_AWARE_SCREEN_ON` fired when the screen is on.
++ `ScreenSensor.ACTION_AWARE_SCREEN_OFF` fired when the screen is off.
++ `ScreenSensor.ACTION_AWARE_SCREEN_LOCKED` fired when the screen is locked.
++ `ScreenSensor.ACTION_AWARE_SCREEN_UNLOCKED` fired when the screen is unlocked.
+
+## Data Representations
+
+### Screen Data
+
+Contains the screen profiles.
+
+| Field        | Type   | Description                                                            |
+| ------------ | ------ | ---------------------------------------------------------------------- |
+| screenStatus | Int    | screen status, one of the following: 0=off, 1=on, 2=locked, 3=unlocked |
+| deviceId     | String | AWARE device UUID                                                      |
+| label        | String | Customizable label. Useful for data calibration or traceability        |
+| timestamp    | Long   | Unixtime milliseconds since 1970                                       |
+| timezone     | Int    | Timezone of the device                                 |
+| os           | String | Operating system of the device (e.g., ios)                           |
 
 ## Example usage
 
