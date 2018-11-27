@@ -94,10 +94,6 @@ public class ScreenSensor: AwareSensor {
             dbPath = "aware_screen"
         }
         
-        public convenience init(_ json:JSON){
-            self.init()
-        }
-        
         public func apply(closure:(_ config: ScreenSensor.Config ) -> Void ) -> Self {
             closure(self)
             return self

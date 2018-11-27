@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/cocoapods/l/com.awareframework.ios.sensor.screen.svg?style=flat)](https://cocoapods.org/pods/com.awareframework.ios.sensor.screen)
 [![Platform](https://img.shields.io/cocoapods/p/com.awareframework.ios.sensor.screen.svg?style=flat)](https://cocoapods.org/pods/com.awareframework.ios.sensor.screen)
 
-The screen sensor monitors the screen statuses, such as turning on and off, locked and unlocked
+The screen sensor monitors the screen statuses, such as turning on and off, locked and unlocked.
 
 ## Requirements
 iOS 10 or later
