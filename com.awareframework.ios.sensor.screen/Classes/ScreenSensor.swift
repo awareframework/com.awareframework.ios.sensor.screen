@@ -120,7 +120,7 @@ public class ScreenSensor: AwareSensor {
     
     public override func sync(force: Bool = false) {
         if let engine = self.dbEngine {
-            engine.startSync(ScreenData.TABLE_NAME, DbSyncConfig.init().apply{ config in
+            engine.startSync(ScreenData.TABLE_NAME, ScreenData.self, DbSyncConfig.init().apply{ config in
                 config.debug = self.CONFIG.debug
             } )
         }
