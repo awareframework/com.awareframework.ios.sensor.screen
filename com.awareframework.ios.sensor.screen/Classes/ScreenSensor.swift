@@ -203,6 +203,7 @@ public class ScreenSensor: AwareSensor {
     func screenLocked(){
         let screenData = ScreenData()
         screenData.screenStatus = ScreenSensor.STATUS_SCREEN_LOCKED
+        screenData.label = self.CONFIG.label
         if let engine = self.dbEngine {
             engine.save(screenData)
         }
@@ -217,6 +218,7 @@ public class ScreenSensor: AwareSensor {
     
     func screenUnlocked(){
         let screenData = ScreenData()
+        screenData.label = self.CONFIG.label
         if(lastEventTimestamp + 0.1 < Date().timeIntervalSince1970){
             screenData.screenStatus = ScreenSensor.STATUS_SCREEN_UNLOCKED
             if let engine = self.dbEngine {
