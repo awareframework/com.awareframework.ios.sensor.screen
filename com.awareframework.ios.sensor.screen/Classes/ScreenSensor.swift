@@ -7,7 +7,6 @@
 
 import UIKit
 import com_awareframework_ios_sensor_core
-import SwiftyJSON
 
 extension Notification.Name {
     public static let actionAwareScreen       = Notification.Name(ScreenSensor.ACTION_AWARE_SCREEN)
@@ -20,6 +19,8 @@ extension Notification.Name {
     public static let actionAwareScreenOff    = Notification.Name(ScreenSensor.ACTION_AWARE_SCREEN_OFF)
     public static let actionAwareScreenLocked = Notification.Name(ScreenSensor.ACTION_AWARE_SCREEN_LOCKED)
     public static let actionAwareScreenUnlocked  = Notification.Name(ScreenSensor.ACTION_AWARE_SCREEN_UNLOCKED)
+    
+    public static let actionAwareScreenSyncCompletion  = Notification.Name(ScreenSensor.ACTION_AWARE_SCREEN_SYNC_COMPLETION)
 }
 
 public protocol ScreenObserver{
@@ -39,6 +40,10 @@ public class ScreenSensor: AwareSensor {
     public static let ACTION_AWARE_SCREEN_SET_LABEL = "com.awareframework.ios.sensor.screen.SET_LABEL"
     public static let EXTRA_LABEL = "label"
     public static let ACTION_AWARE_SCREEN_SYNC = "com.awareframework.ios.sensor.screen.SENSOR_SYNC"
+    
+    public static let ACTION_AWARE_SCREEN_SYNC_COMPLETION = "com.awareframework.ios.sensor.screeen.SENSOR_SYNC_COMPLETION"
+    public static let EXTRA_STATUS = "status"
+    public static let EXTRA_ERROR = "error"
     
     /**
      * Broadcasted event: screen is on
@@ -129,20 +134,30 @@ public class ScreenSensor: AwareSensor {
     
     public override func start() {
         setDeviceLockEventbserver()
-        self.notificationCenter.post(name: .actionAwareScreenStart, object: nil)
+        self.notificationCenter.post(name: .actionAwareScreenStart, object: self)
     }
     
     public override func stop() {
         removeDeviceLockEventbserver()
-        self.notificationCenter.post(name: .actionAwareScreenStop,  object:nil)
+        self.notificationCenter.post(name: .actionAwareScreenStop,  object: self)
     }
     
     public override func sync(force: Bool = false) {
         if let engine = self.dbEngine {
             engine.startSync(ScreenData.TABLE_NAME, ScreenData.self, DbSyncConfig.init().apply{ config in
                 config.debug = self.CONFIG.debug
+                config.dispatchQueue = DispatchQueue(label: "com.awareframework.ios.sensor.screen.sync.queue")
+                config.completionHandler = { (status, error) in
+                    var userInfo: Dictionary<String,Any> = [ScreenSensor.EXTRA_STATUS :status]
+                    if let e = error {
+                        userInfo[ScreenSensor.EXTRA_ERROR] = e
+                    }
+                    self.notificationCenter.post(name: .actionAwareScreenSyncCompletion ,
+                                                 object: self,
+                                                 userInfo:userInfo)
+                }
             })
-            self.notificationCenter.post(name: .actionAwareScreenSync, object: nil )
+            self.notificationCenter.post(name: .actionAwareScreenSync, object: self)
         }
     }
     
@@ -182,41 +197,41 @@ public class ScreenSensor: AwareSensor {
         } else {
             self.screenUnlocked()
         }
-        self.notificationCenter.post(name: .actionAwareScreen, object: nil)
+        self.notificationCenter.post(name: .actionAwareScreen, object: self)
     }
     
-    public func screenLocked(){
+    func screenLocked(){
         let screenData = ScreenData()
         screenData.screenStatus = ScreenSensor.STATUS_SCREEN_LOCKED
         if let engine = self.dbEngine {
-            engine.save(screenData, ScreenData.TABLE_NAME)
+            engine.save(screenData)
         }
         if self.CONFIG.debug { print("locked") }
         if let observer = self.CONFIG.sensorObserver{
             observer.onScreenLocked()
         }
-        self.notificationCenter.post(name: .actionAwareScreenLocked, object: nil)
+        self.notificationCenter.post(name: .actionAwareScreenLocked, object: self)
         // set last event timestamp for ignore a screenUnlock event after a screenLock event
         lastEventTimestamp = Date().timeIntervalSince1970
     }
     
-    public func screenUnlocked(){
+    func screenUnlocked(){
         let screenData = ScreenData()
         if(lastEventTimestamp + 0.1 < Date().timeIntervalSince1970){
             screenData.screenStatus = ScreenSensor.STATUS_SCREEN_UNLOCKED
             if let engine = self.dbEngine {
-                engine.save(screenData, ScreenData.TABLE_NAME)
+                engine.save(screenData)
             }
             if self.CONFIG.debug { print("unlocked")}
             if let observer = self.CONFIG.sensorObserver{
                 observer.onScreenUnlocked()
             }
-            self.notificationCenter.post(name: .actionAwareScreenUnlocked, object: nil)
+            self.notificationCenter.post(name: .actionAwareScreenUnlocked, object: self)
         }
     }
     
-    public func set(label:String){
+    public override func set(label:String){
         self.CONFIG.label = label
-        self.notificationCenter.post(name: .actionAwareScreenSetLabel, object: nil, userInfo: [ScreenSensor.EXTRA_LABEL:label])
+        self.notificationCenter.post(name: .actionAwareScreenSetLabel, object: self, userInfo: [ScreenSensor.EXTRA_LABEL:label])
     }
 }
