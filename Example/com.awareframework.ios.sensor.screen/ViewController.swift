@@ -25,6 +25,11 @@ class ViewController: UIViewController {
     }
 
     class Observer:ScreenObserver {
+        func onScreenBrightnessChanged(data: ScreenBrightnessData) {
+            print(#function)
+            print(data.brightness)
+        }
+        
         func onScreenOn() {
             print(#function)
         }

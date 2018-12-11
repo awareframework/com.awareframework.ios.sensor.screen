@@ -19,9 +19,9 @@ class Tests: XCTestCase {
     func testObserver(){
 
         class Observer:ScreenObserver{
-            
             weak var screenLockedExpectation: XCTestExpectation?
             weak var screenUnlockedExpectation: XCTestExpectation?
+            weak var screenBrightnessExpectation: XCTestExpectation?
             
             func onScreenOn() {
                 //
@@ -41,14 +41,21 @@ class Tests: XCTestCase {
                 print("unlock")
             }
             
+            func onScreenBrightnessChanged(data: ScreenBrightnessData) {
+                screenBrightnessExpectation?.fulfill()
+                print(data)
+            }
+            
         }
         
         let lockObserverExpect = expectation(description: "lock observer")
         let unlockObserverExpect = expectation(description: "unlock observer")
+        let brightnessObserverExpect = expectation(description: "brightness observer")
         let observer = Observer()
         
         observer.screenLockedExpectation = lockObserverExpect
         observer.screenUnlockedExpectation = unlockObserverExpect
+        observer.screenBrightnessExpectation = brightnessObserverExpect
         let sensor = ScreenSensor.init(ScreenSensor.Config().apply{ config in
             config.sensorObserver = observer
             config.debug = true
@@ -56,12 +63,13 @@ class Tests: XCTestCase {
         sensor.start()
         
         sensor.screenLocked()
+        sensor.screenBrightnessChanged()
         
         Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { (timer) in
             sensor.screenUnlocked()
         }
         
-        wait(for: [lockObserverExpect, unlockObserverExpect], timeout: 3)
+        wait(for: [lockObserverExpect, unlockObserverExpect, brightnessObserverExpect], timeout: 3)
         sensor.stop()
         
     }

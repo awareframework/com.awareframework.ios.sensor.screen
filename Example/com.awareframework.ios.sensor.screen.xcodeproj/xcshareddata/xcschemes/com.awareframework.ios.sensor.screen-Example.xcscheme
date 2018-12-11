@@ -14,6 +14,34 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "67431CECC8E23DADFF23E5645693D073"
+               BuildableName = "Pods_com_awareframework_ios_sensor_screen_Example.framework"
+               BlueprintName = "Pods-com.awareframework.ios.sensor.screen_Example"
+               ReferencedContainer = "container:Pods/Pods.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A218E5E8DCAE3A7382FA8B25DC258C45"
+               BuildableName = "Pods_com_awareframework_ios_sensor_screen_Tests.framework"
+               BlueprintName = "Pods-com.awareframework.ios.sensor.screen_Tests"
+               ReferencedContainer = "container:Pods/Pods.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
                BuildableName = "com.awareframework.ios.sensor.screen_Example.app"
                BlueprintName = "com.awareframework.ios.sensor.screen_Example"
@@ -46,7 +74,7 @@
       <CodeCoverageTargets>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "54ACA33A330F431761AD8843B46BD5B1"
+            BlueprintIdentifier = "A182A299E74EA42CD9F10BC1947EB697"
             BuildableName = "com_awareframework_ios_sensor_screen.framework"
             BlueprintName = "com.awareframework.ios.sensor.screen"
             ReferencedContainer = "container:Pods/Pods.xcodeproj">

@@ -214,6 +214,11 @@
 						CreatedOnToolsVersion = 6.3.1;
 						DevelopmentTeam = FH352PYMNC;
 						LastSwiftMigration = 1010;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -321,6 +326,7 @@
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/com.awareframework.ios.sensor.core/com_awareframework_ios_sensor_core.framework",
+				"${BUILT_PRODUCTS_DIR}/com.awareframework.ios.sensor.locations/com_awareframework_ios_sensor_locations.framework",
 				"${BUILT_PRODUCTS_DIR}/com.awareframework.ios.sensor.screen/com_awareframework_ios_sensor_screen.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -333,6 +339,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/com_awareframework_ios_sensor_core.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/com_awareframework_ios_sensor_locations.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/com_awareframework_ios_sensor_screen.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

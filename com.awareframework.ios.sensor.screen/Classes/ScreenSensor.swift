@@ -28,6 +28,7 @@ public protocol ScreenObserver{
     func onScreenOff()
     func onScreenLocked()
     func onScreenUnlocked()
+    func onScreenBrightnessChanged(data:ScreenBrightnessData)
 }
 
 public class ScreenSensor: AwareSensor {
@@ -44,6 +45,8 @@ public class ScreenSensor: AwareSensor {
     public static let ACTION_AWARE_SCREEN_SYNC_COMPLETION = "com.awareframework.ios.sensor.screeen.SENSOR_SYNC_COMPLETION"
     public static let EXTRA_STATUS = "status"
     public static let EXTRA_ERROR = "error"
+    public static let EXTRA_OBJECT_TYPE = "objectType"
+    public static let EXTRA_TABLE_NAME  = "tableName"
     
     /**
      * Broadcasted event: screen is on
@@ -105,6 +108,11 @@ public class ScreenSensor: AwareSensor {
      */
     public static let STATUS_SCREEN_UNLOCKED = 3
     
+    var screenBrigthnessObserver:NSObjectProtocol? = nil
+    
+    var timer:Timer? = nil
+    
+    var LAST_VALUE:Double = 0
     
     public var CONFIG = Config()
     
@@ -132,23 +140,57 @@ public class ScreenSensor: AwareSensor {
         initializeDbEngine(config: config)
     }
     
+    deinit {
+        if let observer = self.screenBrigthnessObserver{
+            self.notificationCenter.removeObserver(observer)
+        }
+    }
+    
+    var LAST_SCREEN_STATE = false
+    
     public override func start() {
         setDeviceLockEventbserver()
         self.notificationCenter.post(name: .actionAwareScreenStart, object: self)
+        self.screenBrigthnessObserver = self.notificationCenter.addObserver(
+            forName: UIScreen.brightnessDidChangeNotification, object: nil, queue: .main) { (notification) in
+             self.screenBrightnessChanged()
+                
+            if UIScreen.main.brightness == 0.0 {
+                if self.LAST_SCREEN_STATE == true {
+                    self.screenOff()
+                    self.LAST_SCREEN_STATE = false
+                }
+            }else{
+                if self.LAST_SCREEN_STATE == false {
+                    self.screenOn()
+                    self.LAST_SCREEN_STATE = true
+                }
+            }
+        }
     }
     
     public override func stop() {
         removeDeviceLockEventbserver()
         self.notificationCenter.post(name: .actionAwareScreenStop,  object: self)
+        if let observer = self.screenBrigthnessObserver {
+            self.notificationCenter.removeObserver(observer)
+            self.screenBrigthnessObserver = nil
+        }
     }
     
     public override func sync(force: Bool = false) {
         if let engine = self.dbEngine {
-            engine.startSync(ScreenData.TABLE_NAME, ScreenData.self, DbSyncConfig.init().apply{ config in
-                config.debug = self.CONFIG.debug
-                config.dispatchQueue = DispatchQueue(label: "com.awareframework.ios.sensor.screen.sync.queue")
+            
+            let config = DbSyncConfig().apply{setting in
+                setting.debug = self.CONFIG.debug
+                setting.dispatchQueue = DispatchQueue(label: "com.awareframework.ios.sensor.screen.sync.queue")
+            }
+            
+            engine.startSync(ScreenData.TABLE_NAME, ScreenData.self, config.apply{ setting in
                 config.completionHandler = { (status, error) in
-                    var userInfo: Dictionary<String,Any> = [ScreenSensor.EXTRA_STATUS :status]
+                    var userInfo: Dictionary<String,Any> = [ScreenSensor.EXTRA_STATUS :status,
+                                                            ScreenSensor.EXTRA_TABLE_NAME: ScreenData.TABLE_NAME,
+                                                            ScreenSensor.EXTRA_OBJECT_TYPE: ScreenData.self]
                     if let e = error {
                         userInfo[ScreenSensor.EXTRA_ERROR] = e
                     }
@@ -157,6 +199,22 @@ public class ScreenSensor: AwareSensor {
                                                  userInfo:userInfo)
                 }
             })
+            
+            engine.startSync(ScreenBrightnessData.TABLE_NAME, ScreenBrightnessData.self, config.apply{ setting in
+                config.completionHandler = { (status, error) in
+                    var userInfo: Dictionary<String,Any> = [ScreenSensor.EXTRA_STATUS :status,
+                                                            ScreenSensor.EXTRA_TABLE_NAME: ScreenBrightnessData.TABLE_NAME,
+                                                            ScreenSensor.EXTRA_OBJECT_TYPE: ScreenBrightnessData.self]
+                    if let e = error {
+                        userInfo[ScreenSensor.EXTRA_ERROR] = e
+                    }
+                    self.notificationCenter.post(name: .actionAwareScreenSyncCompletion ,
+                                                 object: self,
+                                                 userInfo:userInfo)
+                }
+            })
+            
+            
             self.notificationCenter.post(name: .actionAwareScreenSync, object: self)
         }
     }
@@ -207,13 +265,17 @@ public class ScreenSensor: AwareSensor {
         if let engine = self.dbEngine {
             engine.save(screenData)
         }
-        if self.CONFIG.debug { print("locked") }
+        if self.CONFIG.debug { print(ScreenSensor.TAG, "locked") }
         if let observer = self.CONFIG.sensorObserver{
             observer.onScreenLocked()
         }
         self.notificationCenter.post(name: .actionAwareScreenLocked, object: self)
         // set last event timestamp for ignore a screenUnlock event after a screenLock event
         lastEventTimestamp = Date().timeIntervalSince1970
+        if let t = self.timer{
+            t.invalidate()
+            self.timer = nil
+        }
     }
     
     func screenUnlocked(){
@@ -224,11 +286,64 @@ public class ScreenSensor: AwareSensor {
             if let engine = self.dbEngine {
                 engine.save(screenData)
             }
-            if self.CONFIG.debug { print("unlocked")}
+            if self.CONFIG.debug { print(ScreenSensor.TAG, "unlocked")}
             if let observer = self.CONFIG.sensorObserver{
                 observer.onScreenUnlocked()
             }
             self.notificationCenter.post(name: .actionAwareScreenUnlocked, object: self)
+            if self.timer == nil {
+                self.timer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true, block: { (timer) in
+                    self.screenBrightnessChanged()
+                })
+                self.screenBrightnessChanged()
+            }
+        }
+    }
+    
+    func screenOn(){
+        let screenData = ScreenData()
+        screenData.label = self.CONFIG.label
+        screenData.screenStatus = ScreenSensor.STATUS_SCREEN_ON
+        if let engine = self.dbEngine {
+            engine.save(screenData)
+        }
+        if self.CONFIG.debug { print(ScreenSensor.TAG, "screen on")}
+        if let observer = self.CONFIG.sensorObserver{
+            observer.onScreenOn()
+        }
+        self.notificationCenter.post(name: .actionAwareScreenOn, object: self)
+    }
+    
+    func screenOff(){
+        let screenData = ScreenData()
+        screenData.label = self.CONFIG.label
+        screenData.screenStatus = ScreenSensor.STATUS_SCREEN_OFF
+        if let engine = self.dbEngine {
+            engine.save(screenData)
+        }
+        if self.CONFIG.debug { print(ScreenSensor.TAG, "screen off")}
+        if let observer = self.CONFIG.sensorObserver{
+            observer.onScreenOff()
+        }
+        self.notificationCenter.post(name: .actionAwareScreenOff, object: self)
+    }
+    
+    func screenBrightnessChanged(){
+        
+        let brightness = Double(UIScreen.main.brightness)
+        
+        // print("gap",fabs(LAST_VALUE - brightness))
+        if fabs(LAST_VALUE - brightness) > 0.1 {
+            let data = ScreenBrightnessData()
+            data.brightness = brightness
+            data.label = self.CONFIG.label
+            if let engine = self.dbEngine {
+                if let observer = self.CONFIG.sensorObserver{
+                    observer.onScreenBrightnessChanged(data: data)
+                }
+                engine.save(data)
+            }
+            LAST_VALUE = brightness
         }
     }
     

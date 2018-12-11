@@ -7,15 +7,21 @@
 //
 
 import UIKit
+import com_awareframework_ios_sensor_locations
+import CoreLocation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
+    var location = LocationsSensor(LocationsSensor.Config().apply{config in
+        config.accuracy = kCLLocationAccuracyThreeKilometers
+    })
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        self.location.start()
         return true
     }
 
