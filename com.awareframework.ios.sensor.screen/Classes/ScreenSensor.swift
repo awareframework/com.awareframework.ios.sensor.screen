@@ -333,7 +333,7 @@ public class ScreenSensor: AwareSensor {
         let brightness = Double(UIScreen.main.brightness)
         
         // print("gap",fabs(LAST_VALUE - brightness))
-        if fabs(LAST_VALUE - brightness) > 0.1 {
+        if fabs(LAST_VALUE - brightness) > 0.1 { // 10%
             let data = ScreenBrightnessData()
             data.brightness = brightness
             data.label = self.CONFIG.label
