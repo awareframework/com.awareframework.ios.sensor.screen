@@ -38,3 +38,9 @@ Pods/
 Example/Podfile.lock
 Example/Pods/
 Example/com.awareframework.ios.sensor.screen.xcworkspace/
+
+
+.build
+Packages
+.swiftpm
+.*.sw?

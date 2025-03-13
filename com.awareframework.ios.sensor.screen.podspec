@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'com.awareframework.ios.sensor.screen'
-  s.version          = '0.7.0'
+  s.version          = '0.7.2'
   s.summary          = 'A Screen Sensor Module for AWARE Framework.'
 
 # This description is used to generate tags and improve search results.
