@@ -28,6 +28,7 @@ extension Notification.Name {
 
     public static let actionAwareScreenSyncCompletion = Notification.Name(
         ScreenSensor.ACTION_AWARE_SCREEN_SYNC_COMPLETION)
+
 }
 
 public protocol ScreenObserver {

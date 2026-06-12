@@ -3,7 +3,7 @@ import GRDB
 import com_awareframework_ios_core
 
 public struct ScreenData: BaseDbModelSQLite {
-    public static let databaseTableName = "screenData"
+    public static let databaseTableName = "ios_screen"
     public static let TABLE_NAME = databaseTableName
 
     public var timezone: Int = AwareUtils.getTimeZone()

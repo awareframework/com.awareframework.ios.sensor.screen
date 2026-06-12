@@ -24,7 +24,7 @@ You can integrate this framework into your project via Swift Package Manager (Sw
 
 ## ScreenSensor
 * `init(config:ScreenSensor.Config?)` : Initializes the screen sensor with the optional configuration.
-* `start()`: Starts the gyroscope sensor with the optional configuration.
+* `start()`: Starts the screen sensor with the optional configuration.
 * `stop()`: Stops the service.
 
 
@@ -62,9 +62,24 @@ Contains the screen profiles.
 | screenStatus | Int    | screen status, one of the following: 0=off, 1=on, 2=locked, 3=unlocked |
 | deviceId     | String | AWARE device UUID                                                      |
 | label        | String | Customizable label. Useful for data calibration or traceability        |
-| timestamp    | Long   | Unixtime milliseconds since 1970                                       |
-| timezone     | Int    | Timezone of the device                                 |
-| os           | String | Operating system of the device (e.g., ios)                           |
+| timestamp    | Int64  | Unixtime milliseconds since 1970                                       |
+| timezone     | Int    | Timezone of the device                                                 |
+| os           | String | Operating system of the device (e.g., ios)                             |
+| jsonVersion  | Int    | JSON schema version                                                    |
+
+### Screen Brightness Data
+
+Contains the screen brightness level.
+
+| Field       | Type   | Description                                                            |
+| ----------- | ------ | ---------------------------------------------------------------------- |
+| brightness  | Double | Screen brightness level [0.0–1.0], or -1 if unavailable               |
+| deviceId    | String | AWARE device UUID                                                      |
+| label       | String | Customizable label. Useful for data calibration or traceability        |
+| timestamp   | Int64  | Unixtime milliseconds since 1970                                       |
+| timezone    | Int    | Timezone of the device                                                 |
+| os          | String | Operating system of the device (e.g., ios)                             |
+| jsonVersion | Int    | JSON schema version                                                    |
 
 ## Example usage
 
@@ -72,7 +87,6 @@ Contains the screen profiles.
 var screenSensor = ScreenSensor.init(ScreenSensor.Config().apply{config in
     config.sensorObserver = Observer()
     config.debug = true
-    config.dbType = .REALM
 })
 screenSensor?.start()
 ```
@@ -103,7 +117,7 @@ Yuuki Nishiyama (The University of Tokyo), nishiyama@csis.u-tokyo.ac.jp
 
 ## License
 
-Copyright (c) 2015 AWARE Mobile Context Instrumentation Middleware/Framework (http://www.awareframework.com)
+Copyright (c) 2025 AWARE Mobile Context Instrumentation Middleware/Framework (http://www.awareframework.com)
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
