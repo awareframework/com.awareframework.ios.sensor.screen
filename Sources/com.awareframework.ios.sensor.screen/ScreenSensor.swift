@@ -281,6 +281,7 @@ public class ScreenSensor: AwareSensor {
 
     func screenLocked() {
         var screenData = ScreenData()
+        screenData.timestamp = Int64(Date().timeIntervalSince1970 * 1000)
         screenData.screenStatus = ScreenSensor.STATUS_SCREEN_LOCKED
         screenData.label = self.CONFIG.label
         self.saveModels([screenData])
@@ -299,6 +300,7 @@ public class ScreenSensor: AwareSensor {
 
     func screenUnlocked() {
         var screenData = ScreenData()
+        screenData.timestamp = Int64(Date().timeIntervalSince1970 * 1000)
         screenData.label = self.CONFIG.label
         if lastEventTimestamp + 0.1 < Date().timeIntervalSince1970 {
             screenData.screenStatus = ScreenSensor.STATUS_SCREEN_UNLOCKED
@@ -321,6 +323,7 @@ public class ScreenSensor: AwareSensor {
 
     func screenOn() {
         var screenData = ScreenData()
+        screenData.timestamp = Int64(Date().timeIntervalSince1970 * 1000)
         screenData.label = self.CONFIG.label
         screenData.screenStatus = ScreenSensor.STATUS_SCREEN_ON
         self.saveModels([screenData])
@@ -333,6 +336,7 @@ public class ScreenSensor: AwareSensor {
 
     func screenOff() {
         var screenData = ScreenData()
+        screenData.timestamp = Int64(Date().timeIntervalSince1970 * 1000)
         screenData.label = self.CONFIG.label
         screenData.screenStatus = ScreenSensor.STATUS_SCREEN_OFF
         self.saveModels([screenData])
@@ -350,6 +354,7 @@ public class ScreenSensor: AwareSensor {
         // print("gap",fabs(LAST_VALUE - brightness))
         if fabs(LAST_VALUE - brightness) > 0.1 {  // 10%
             var data = ScreenBrightnessData()
+            data.timestamp = Int64(Date().timeIntervalSince1970 * 1000)
             data.brightness = brightness
             data.label = self.CONFIG.label
             if let observer = self.CONFIG.sensorObserver {
