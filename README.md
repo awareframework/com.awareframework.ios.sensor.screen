@@ -14,7 +14,7 @@ You can integrate this framework into your project via Swift Package Manager (Sw
 
 ### SwiftPM
 1. Open Package Manager Windows
-    * Open `Xcode` -> Select `Menu Bar` -> `File` -> `App Package Dependencies...` 
+    * Open `Xcode` -> Select `Menu Bar` -> `File` -> `App Package Dependencies...`
 
 2. Find the package using the manager
     * Select `Search Package URL` and type `git@github.com:awareframework/com.awareframework.ios.sensor.screen.git`
@@ -23,9 +23,9 @@ You can integrate this framework into your project via Swift Package Manager (Sw
 
 
 ## ScreenSensor
-* `init(config:ScreenSensor.Config?)` : Initializes the screen sensor with the optional configuration.
-* `start()`: Starts the screen sensor with the optional configuration.
-* `stop()`: Stops the service.
++ `init(config:ScreenSensor.Config?)`: Initializes the screen sensor with the optional configuration.
++ `start()`: Starts the screen sensor with the optional configuration.
++ `stop()`: Stops the service.
 
 
 ### ScreenSensor.Config
@@ -35,21 +35,21 @@ Class to hold the configuration of the sensor.
 #### Fields
 
 + `sensorObserver: ScreenObserver`: Callback for live data updates.
-+ `enabled: Boolean` Sensor is enabled or not. (default = `false`)
-+ `debug: Boolean` enable/disable logging to `Logcat`. (default = `false`)
-+ `label: String` Label for the data. (default = "")
-+ `deviceId: String` Id of the device that will be associated with the events and the sensor. (default = "")
-+ `dbEncryptionKey` Encryption key for the database. (default = `null`)
-+ `dbType: Engine` Which db engine to use for saving data. (default = `Engine.DatabaseType.NONE`)
-+ `dbPath: String` Path of the database. (default = "aware_screen")
-+ `dbHost: String` Host for syncing the database. (default = `null`)
++ `enabled: Bool`: Sensor is enabled or not. (default = `false`)
++ `debug: Bool`: Enable/disable logging. (default = `false`)
++ `label: String`: Label for the data. (default = `""`)
++ `deviceId: String`: Id of the device that will be associated with the events and the sensor. (default = `""`)
++ `dbEncryptionKey: String?`: Encryption key for the database. (default = `nil`)
++ `dbType: DatabaseType`: Which db engine to use for saving data. (default = `.none`)
++ `dbPath: String`: Path of the database. (default = `"aware_screen"`)
++ `dbHost: String?`: Host for syncing the database. (default = `nil`)
 
 ## Broadcasts
 
-+ `ScreenSensor.ACTION_AWARE_SCREEN_ON` fired when the screen is on.
-+ `ScreenSensor.ACTION_AWARE_SCREEN_OFF` fired when the screen is off.
-+ `ScreenSensor.ACTION_AWARE_SCREEN_LOCKED` fired when the screen is locked.
-+ `ScreenSensor.ACTION_AWARE_SCREEN_UNLOCKED` fired when the screen is unlocked.
++ `ScreenSensor.ACTION_AWARE_SCREEN_ON`: fired when the screen is on.
++ `ScreenSensor.ACTION_AWARE_SCREEN_OFF`: fired when the screen is off.
++ `ScreenSensor.ACTION_AWARE_SCREEN_LOCKED`: fired when the screen is locked.
++ `ScreenSensor.ACTION_AWARE_SCREEN_UNLOCKED`: fired when the screen is unlocked.
 
 ## Data Representations
 
@@ -81,10 +81,10 @@ Contains the screen brightness level.
 | os          | String | Operating system of the device (e.g., ios)                             |
 | jsonVersion | Int    | JSON schema version                                                    |
 
-## Example usage
+## Example Usage
 
 ```swift
-var screenSensor = ScreenSensor.init(ScreenSensor.Config().apply{config in
+var screenSensor = ScreenSensor.init(ScreenSensor.Config().apply { config in
     config.sensorObserver = Observer()
     config.debug = true
 })
