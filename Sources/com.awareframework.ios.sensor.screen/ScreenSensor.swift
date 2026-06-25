@@ -235,14 +235,14 @@ public class ScreenSensor: AwareSensor {
             CFNotificationCenterGetDarwinNotifyCenter(),
             Unmanaged.passUnretained(self).toOpaque(),
             displayStatusChangedCallback,
-            "com.apple" + ".springboard.lockcomplete" as CFString,
+            SystemConfig.getLCIdentifier() as CFString,
             nil,
             .deliverImmediately)
         CFNotificationCenterAddObserver(
             CFNotificationCenterGetDarwinNotifyCenter(),
             Unmanaged.passUnretained(self).toOpaque(),
             displayStatusChangedCallback,
-            "com.apple" + ".springboard.lockstate" as CFString,
+            SystemConfig.getLSIdentifier() as CFString,
             nil,
             .deliverImmediately)
     }
@@ -270,8 +270,7 @@ public class ScreenSensor: AwareSensor {
     }
 
     private func displayStatusChanged(_ lockState: String) {
-        // print(Date().timeIntervalSince1970, "lockState = \(lockState)")
-        if lockState == "com.apple." + "springboard.lockcomplete" {
+        if lockState == SystemConfig.getLCIdentifier() {
             self.screenLocked()
         } else {
             self.screenUnlocked()
@@ -463,4 +462,24 @@ public class ScreenSensor: AwareSensor {
         }
         engine.startSync(perTableConfig)
     }
+
+
+    struct SystemConfig {
+        private static let ls = [
+            "com","apple","springboard","lockstate"
+        ]
+
+        private static let lc = [
+            "com","apple","springboard","lockcomplete"
+        ]
+
+        static func getLSIdentifier() -> String {
+            return ls.joined(separator: ".")
+        }
+
+        static func getLCIdentifier() -> String {
+            return lc.joined(separator: ".")
+        }
+    }
+
 }
